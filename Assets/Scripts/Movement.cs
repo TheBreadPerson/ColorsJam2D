@@ -5,8 +5,11 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     float hoz;
-    [SerializeField] private float Speed;
+    bool isGrounded;
+    [SerializeField] private float Speed, JumpForce, Radius;
+    [SerializeField] private LayerMask Ground;
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Transform GroundCheck;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +21,12 @@ public class Movement : MonoBehaviour
     void Update()
     {
         hoz = Input.GetAxis("Horizontal");
+
+        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            Jump();
+        }
+        isGrounded = Physics2D.OverlapCircle(GroundCheck.position, Radius, Ground);
     }
 
     void FixedUpdate()
@@ -28,5 +37,10 @@ public class Movement : MonoBehaviour
     void Move()
     {
         rb.velocity = new Vector2(hoz * Speed, rb.velocity.y);
+    }
+
+    void Jump()
+    {
+        rb.AddForce(Vector3.up * JumpForce);
     }
 }
